@@ -1,0 +1,10 @@
+services:
+  database:
+    image: postgres
+    container_name: book-shop-auth-service
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=auth-service
+    ports:
+      - 5433:5432
