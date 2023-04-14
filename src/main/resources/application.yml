@@ -3,14 +3,18 @@ server:
 spring:
   application:
     name: auth-service
-  datasource:
+  r2dbc:
     username: admin
     password: admin
-    url: jdbc:postgresql://localhost:5433/auth-service
-    driver-class-name: org.postgresql.Driver
+    url: r2dbc:postgresql://localhost:5433/auth-service
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    url: jdbc:postgresql://localhost:5433/auth-service
+    user: admin
+    password: admin
 eureka:
   client:
     service-url:
