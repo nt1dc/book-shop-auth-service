@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1681460068513-1
+      id: 1681473114024-1
       author: nt1dc (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -11,7 +11,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_user
+                    primaryKeyName: pk_account
                   name: id
                   type: INT
               - column:
@@ -20,17 +20,86 @@ databaseChangeLog:
               - column:
                   name: password
                   type: VARCHAR(255)
-              - column:
-                  name: roles
-                  type: INT
-            tableName: user
+            tableName: account
   - changeSet:
-      id: 1681460068513-2
+      id: 1681473114024-2
+      author: nt1dc (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_account_roles
+                  name: account_id
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_account_roles
+                  name: role_id
+                  type: INT
+            tableName: account_roles
+  - changeSet:
+      id: 1681473114024-3
+      author: nt1dc (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_role
+                  name: id
+                  type: INT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+            tableName: role
+  - changeSet:
+      id: 1681473114024-4
       author: nt1dc (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
             columnNames: login
-            constraintName: uc_user_login
-            tableName: user
+            constraintName: uc_account_login
+            tableName: account
+  - changeSet:
+      id: 1681473114024-5
+      author: nt1dc (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: name
+            constraintName: uc_role_name
+            tableName: role
+  - changeSet:
+      id: 1681473114024-6
+      author: nt1dc (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: account_id
+            baseTableName: account_roles
+            constraintName: fk_accrol_on_account
+            referencedColumnNames: id
+            referencedTableName: account
+  - changeSet:
+      id: 1681473114024-7
+      author: nt1dc (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: account_roles
+            constraintName: fk_accrol_on_role
+            referencedColumnNames: id
+            referencedTableName: role
 
