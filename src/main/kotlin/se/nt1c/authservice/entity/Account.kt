@@ -2,7 +2,6 @@ package se.nt1c.authservice.entity
 
 import jakarta.persistence.*
 
-@Table(name = "account")
 @Entity
 data class Account(
     @Id

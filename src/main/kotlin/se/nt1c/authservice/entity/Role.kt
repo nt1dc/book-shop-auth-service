@@ -2,7 +2,6 @@ package se.nt1c.authservice.entity
 
 import jakarta.persistence.*
 
-@Table(name = "role")
 @Entity
 data class Role(
     @Id
@@ -13,6 +12,3 @@ data class Role(
     var name: RoleEnum
 )
 
-enum class RoleEnum() {
-    ADMIN, USER
-}

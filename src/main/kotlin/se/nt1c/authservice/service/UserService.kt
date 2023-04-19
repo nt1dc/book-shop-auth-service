@@ -9,7 +9,8 @@ import se.nt1c.authservice.entity.Account
 
 @Service
 interface UserService {
-    fun register(registerRequest: RegisterRequest): Mono<Account>
-    fun login(authRequest: AuthRequest): Mono<String>
-    fun getUser(id: Int): Mono<Account>
+    fun register(registerRequest: RegisterRequest)
+    fun login(authRequest: AuthRequest): String
+    fun getUser(id: Int): Account
+    fun findByLogin(login: String): Account
 }

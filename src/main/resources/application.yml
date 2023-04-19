@@ -3,21 +3,22 @@ server:
 spring:
   application:
     name: auth-service
-  r2dbc:
+  datasource:
     username: admin
     password: admin
-    url: r2dbc:postgresql://localhost:5433/auth-service
+    url: jdbc:postgresql://localhost:5433/auth-service
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
-    url: jdbc:postgresql://localhost:5433/auth-service
-    user: admin
-    password: admin
+      ddl-auto: create-drop
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8081/eureka
 
 apiGatewayAddress: http://localhost:8082
+
+jwt:
+  token:
+    life_expectancy: 86400
+    secret: ZheltiyPolosatik123ZheltiyPolosatik123
