@@ -4,8 +4,10 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
 import se.nt1c.authservice.dto.AuthRequest
+import se.nt1c.authservice.dto.LoginResponse
 import se.nt1c.authservice.dto.RegisterRequest
 import se.nt1c.authservice.dto.UserCreationRequest
 import se.nt1c.authservice.entity.Account
@@ -19,6 +21,7 @@ import se.nt1c.authservice.repository.UserRepository
 import se.nt1c.authservice.utils.JwtTokenUtil
 
 @Service
+@Transactional
 class UserServiceImpl(
     val userRepository: UserRepository,
     val passwordEncoder: BCryptPasswordEncoder,
@@ -46,11 +49,16 @@ class UserServiceImpl(
 
     }
 
-    override fun login(authRequest: AuthRequest): String {
+    override fun login(authRequest: AuthRequest): LoginResponse {
         val account = userRepository.findByLogin(authRequest.login)
             .orElseThrow { UserAlreadyExistException("user with login: ${authRequest.login} doesnt exist") }
         if (!passwordEncoder.matches(authRequest.password, account.password)) throw BadCreditsException("")
-        return jwtTokenUtil.generateToken(account.login, account.roles.stream().map { it.name.toString() }.toList())
+        return LoginResponse(
+            jwtTokenUtil.generateToken(
+                account.login, account.roles.stream().map { it.name.toString() }.toList()
+            ), account.login
+        )
+
     }
 
     override fun getUser(id: Int): Account {

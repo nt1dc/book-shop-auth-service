@@ -1,6 +1,7 @@
 package se.nt1c.authservice.controller
 
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -13,8 +14,13 @@ import se.nt1c.authservice.service.TokenService
 @RequestMapping("/token")
 class TokenController(val tokenService: TokenService) {
     @PostMapping("/validate")
-    fun validate(@RequestBody tokenValidationRequest: TokenValidationRequest, httpServletRequest: HttpServletRequest) {
-        tokenService.validate(tokenValidationRequest, httpServletRequest)
+    fun validate(
+        @RequestBody tokenValidationRequest: TokenValidationRequest,
+        httpServletRequest: HttpServletRequest,
+        httpServletResponse: HttpServletResponse
+    ) {
+        println("validate $tokenValidationRequest")
+        tokenService.validate(tokenValidationRequest, httpServletRequest, httpServletResponse)
     }
 
     @GetMapping("/getName")

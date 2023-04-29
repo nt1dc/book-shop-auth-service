@@ -1,6 +1,7 @@
 package se.nt1c.authservice.service
 
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Service
 import se.nt1c.authservice.dto.TokenValidationRequest
 import se.nt1c.authservice.entity.RoleEnum
@@ -11,7 +12,9 @@ import se.nt1c.authservice.utils.JwtTokenUtil
 @Service
 class TokenServiceImpl(val userService: UserService, val jwtTokenUtil: JwtTokenUtil) : TokenService {
     override fun validate(
-        tokenValidationRequest: TokenValidationRequest, httpServletRequest: HttpServletRequest
+        tokenValidationRequest: TokenValidationRequest,
+        httpServletRequest: HttpServletRequest,
+        httpServletResponse: HttpServletResponse
     ) {
         val header = httpServletRequest.getHeader("Authorization");
 
@@ -25,6 +28,7 @@ class TokenServiceImpl(val userService: UserService, val jwtTokenUtil: JwtTokenU
                     .contains(it.name)
             }.toList()
             if (toList.isEmpty()) throw NotEnoughAnchorites()
+            httpServletResponse.addHeader("login", account.login)
         } else {
             throw InvalidTokenException("invalid token")
         }
