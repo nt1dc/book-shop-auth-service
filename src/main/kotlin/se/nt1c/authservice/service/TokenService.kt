@@ -8,7 +8,7 @@ import se.nt1c.authservice.dto.TokenValidationRequest
 interface TokenService {
     fun validate(
         tokenValidationRequest: TokenValidationRequest,
-        httpServletRequest: HttpServletRequest,
+        jwt: String,
         httpServletResponse: HttpServletResponse
     )
     fun extractToken(httpServletRequest: HttpServletRequest): String

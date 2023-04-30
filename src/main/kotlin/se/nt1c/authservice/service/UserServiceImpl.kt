@@ -26,7 +26,8 @@ class UserServiceImpl(
     val userRepository: UserRepository,
     val passwordEncoder: BCryptPasswordEncoder,
     val roleRepository: RoleRepository,
-    val jwtTokenUtil: JwtTokenUtil
+    val jwtTokenUtil: JwtTokenUtil,
+    val restTemplate: RestTemplate
 ) : UserService {
     override fun register(registerRequest: RegisterRequest) {
         val accountOptional = userRepository.findByLogin(registerRequest.login)
@@ -37,8 +38,8 @@ class UserServiceImpl(
             password = passwordEncoder.encode(registerRequest.password),
             roles = mutableSetOf(roleUser)
         )
-        val bookServiceRegistrationResponse = RestTemplate().exchange(
-            "http://localhost:8087/user", HttpMethod.POST, HttpEntity(
+        val bookServiceRegistrationResponse = restTemplate.exchange(
+            "http://book-service/user", HttpMethod.POST, HttpEntity(
                 UserCreationRequest(registerRequest.login)
             ), String::class.java
         )
