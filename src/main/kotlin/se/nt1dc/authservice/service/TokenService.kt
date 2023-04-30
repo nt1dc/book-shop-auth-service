@@ -1,13 +1,12 @@
 package se.nt1dc.authservice.service
 
-import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import se.nt1dc.authservice.dto.TokenValidationRequest
+import se.nt1dc.authservice.dto.RequiredAuthorities
 
 
 interface TokenService {
     fun validate(
-        tokenValidationRequest: se.nt1dc.authservice.dto.TokenValidationRequest,
+        requiredAuthorities: RequiredAuthorities,
         authorizationHeader: String,
         httpServletResponse: HttpServletResponse
     )
