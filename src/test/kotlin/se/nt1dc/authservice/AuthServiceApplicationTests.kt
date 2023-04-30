@@ -1,4 +1,4 @@
-package se.nt1c.authservice
+package se.nt1dc.authservice
 
 import org.junit.jupiter.api.Test
 import java.lang.Math.abs
