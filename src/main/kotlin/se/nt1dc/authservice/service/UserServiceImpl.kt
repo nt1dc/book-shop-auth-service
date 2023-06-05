@@ -6,11 +6,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.exchange
 import se.nt1dc.authservice.dto.AuthRequest
 import se.nt1dc.authservice.dto.LoginResponse
 import se.nt1dc.authservice.dto.RegisterRequest
 import se.nt1dc.authservice.dto.UserCreationRequest
 import se.nt1dc.authservice.entity.Account
+import se.nt1dc.authservice.entity.AccountStatus
 import se.nt1dc.authservice.entity.RoleEnum
 import se.nt1dc.authservice.exceptions.BadCreditsException
 import se.nt1dc.authservice.exceptions.UserAlreadyExistException
@@ -36,7 +38,8 @@ class UserServiceImpl(
         val newAccount = Account(
             login = registerRequest.login,
             password = passwordEncoder.encode(registerRequest.password),
-            roles = mutableSetOf(roleUser)
+            roles = mutableSetOf(roleUser),
+            accountStatus = AccountStatus.WAITING_CREATION_ON_BOOK_SERVICE_SIDE
         )
         val bookServiceRegistrationResponse = restTemplate.exchange(
             "http://book-service/user", HttpMethod.POST, HttpEntity(
@@ -46,16 +49,21 @@ class UserServiceImpl(
         if (!bookServiceRegistrationResponse.statusCode.is2xxSuccessful) throw UserCreationException(
             "exception on Book service side ${bookServiceRegistrationResponse.body.toString()}",
         )
-        userRepository.save(newAccount)
-
+        try {
+            userRepository.save(newAccount)
+        } catch (exception: Exception) {
+            val exchange = restTemplate.exchange<Any>(
+                "http://book-service/user/${registerRequest.login}", HttpMethod.DELETE, null
+            )
+            throw UserCreationException("auth service cannot save user with login: ${registerRequest.login}")
+        }
     }
 
     override fun login(authRequest: AuthRequest): LoginResponse {
         val account = userRepository.findByLogin(authRequest.login)
             .orElseThrow { UserAlreadyExistException("user with login: ${authRequest.login} doesnt exist") }
         if (!passwordEncoder.matches(
-                authRequest.password,
-                account.password
+                authRequest.password, account.password
             )
         ) throw BadCreditsException(
             ""
